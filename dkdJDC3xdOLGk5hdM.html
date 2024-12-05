@@ -1,0 +1,209 @@
+<html><head><base href="https://gendelve.com/quantum-reality-playground/simulate?parameters=vitruvian+man+zv_1938a4d98db_b91eeba51b4382efe050a67633b8c7ddbb659a987951ab74175c82d1d52684e5_zvinci+"><title>Gendelve.com - Sacred Geometry Simulator</title>
+<style>
+body {
+  background: #000;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  color: #0f0;
+}
+
+.sacred-geometry {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vitruvian-container {
+  position: relative;
+  width: 800px;
+  height: 800px;
+}
+
+.circle {
+  position: absolute;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 50%;
+  animation: rotate 30s linear infinite;
+}
+
+.golden-spiral {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: spiral-rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spiral-rotate {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(0.1); }
+}
+
+.measurements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.measurement-line {
+  position: absolute;
+  background: rgba(0, 255, 0, 0.2);
+  height: 1px;
+  transform-origin: center;
+}
+
+.phi-ratio {
+  position: absolute;
+  font-size: 12px;
+  color: #0f0;
+}
+
+.sacred-symbols {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+}
+
+.fibonacci-sequence {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 14px;
+}
+
+.divine-proportion {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="sacred-geometry">
+  <div class="vitruvian-container" id="vitruvian">
+    <svg class="golden-spiral" viewBox="0 0 800 800">
+      <path d="M400,400 Q800,400 800,0 Q800,-400 400,-400 Q0,-400 0,0 Q0,400 400,400" 
+            fill="none" 
+            stroke="rgba(0,255,0,0.2)" 
+            stroke-width="1"/>
+    </svg>
+  </div>
+</div>
+
+<div class="fibonacci-sequence">
+  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144...
+</div>
+
+<div class="divine-proportion">
+  φ = 1.618033988749895...
+</div>
+
+<script>
+const container = document.getElementById('vitruvian');
+
+// Create multiple circles with golden ratio spacing
+for(let i = 1; i <= 8; i++) {
+  const circle = document.createElement('div');
+  circle.className = 'circle';
+  const size = i * 100;
+  circle.style.width = size + 'px';
+  circle.style.height = size + 'px';
+  circle.style.left = (800 - size)/2 + 'px';
+  circle.style.top = (800 - size)/2 + 'px';
+  container.appendChild(circle);
+}
+
+// Create measurement lines
+for(let angle = 0; angle < 360; angle += 15) {
+  const line = document.createElement('div');
+  line.className = 'measurement-line';
+  line.style.width = '400px';
+  line.style.transform = `rotate(${angle}deg)`;
+  line.style.left = '200px';
+  line.style.top = '400px';
+  container.appendChild(line);
+}
+
+// Create SVG sacred symbols
+const svgNS = "http://www.w3.org/2000/svg";
+const symbols = document.createElementNS(svgNS, "svg");
+symbols.setAttribute("class", "sacred-symbols");
+symbols.setAttribute("viewBox", "0 0 800 800");
+
+// Add vesica piscis
+const vesica = document.createElementNS(svgNS, "path");
+vesica.setAttribute("d", "M300,400 A100,100 0 0,1 500,400 A100,100 0 0,1 300,400");
+vesica.setAttribute("stroke", "rgba(0,255,0,0.3)");
+vesica.setAttribute("fill", "none");
+symbols.appendChild(vesica);
+
+// Add pentagram
+const pentagram = document.createElementNS(svgNS, "path");
+const points = [];
+for(let i = 0; i < 5; i++) {
+  const angle = (i * 72 - 18) * Math.PI / 180;
+  points.push([
+    400 + 100 * Math.cos(angle),
+    400 + 100 * Math.sin(angle)
+  ]);
+}
+pentagram.setAttribute("d", `M${points[0][0]},${points[0][1]} L${points[2][0]},${points[2][1]} L${points[4][0]},${points[4][1]} L${points[1][0]},${points[1][1]} L${points[3][0]},${points[3][1]} Z`);
+pentagram.setAttribute("stroke", "rgba(0,255,0,0.3)");
+pentagram.setAttribute("fill", "none");
+symbols.appendChild(pentagram);
+
+container.appendChild(symbols);
+
+// Create phi ratio markers
+const phiPoints = [0.618, 1, 1.618, 2.618];
+phiPoints.forEach(phi => {
+  const marker = document.createElement('div');
+  marker.className = 'phi-ratio';
+  marker.style.left = (400 + phi * 100) + 'px';
+  marker.style.top = '400px';
+  marker.textContent = `φ${phi}`;
+  container.appendChild(marker);
+});
+
+// Animate golden ratio spiral
+let angle = 0;
+const animate = () => {
+  angle += 0.01;
+  const r = Math.pow(1.618033988749895, angle/Math.PI);
+  const x = 400 + r * Math.cos(angle);
+  const y = 400 + r * Math.sin(angle);
+  
+  if(container.querySelector('.spiral-point')) {
+    container.querySelector('.spiral-point').remove();
+  }
+  
+  const point = document.createElement('div');
+  point.className = 'spiral-point';
+  point.style.position = 'absolute';
+  point.style.width = '4px';
+  point.style.height = '4px';
+  point.style.background = '#0f0';
+  point.style.borderRadius = '50%';
+  point.style.left = (x - 2) + 'px';
+  point.style.top = (y - 2) + 'px';
+  container.appendChild(point);
+  
+  requestAnimationFrame(animate);
+};
+
+animate();
+</script>
+
+</body>
+</html>
